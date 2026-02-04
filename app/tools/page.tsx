@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav';
 import ToolCard from '@/components/ToolCard';
 import { getRepoData } from '@/lib/github';
+import RefreshButton from '@/components/RefreshButton';
 
 export const revalidate = 21600;
 
@@ -8,6 +9,7 @@ export default async function ToolsPage() {
   const { repo, parsed } = await getRepoData();
   const groups = parsed.toolGroups;
   const hasTools = groups.length > 0;
+  const refreshToken = process.env.NEXT_PUBLIC_REVALIDATE_TOKEN;
 
   return (
     <main className="bg-noise">
@@ -25,6 +27,11 @@ export default async function ToolsPage() {
             <p className="mt-4 text-base text-white/70">
               {parsed.valueProposition || repo.description}
             </p>
+            {refreshToken ? (
+              <div className="mt-6">
+                <RefreshButton token={refreshToken} />
+              </div>
+            ) : null}
           </section>
 
           {hasTools ? (
