@@ -8,6 +8,7 @@ export type ParsedReadme = {
   valueProposition: string;
   sections: ReadmeSection[];
   tools: Array<{ name: string; description: string; tags: string[]; url?: string }>;
+  toolGroups: Array<{ category: string; tools: Array<{ name: string; description: string; tags: string[]; url?: string }> }>;
 };
 
 const headingRegex = /^(#{1,6})\s+(.+)$/;
@@ -170,6 +171,99 @@ function parseToolTable(content: string): Array<{ name: string; description: str
   });
 }
 
+function cleanInline(text: string) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseToolGroupsFromReadme(markdown: string) {
+  const lines = markdown.split('\n');
+  const tocIndex = lines.findIndex((line) => /^##\s+Table of Contents/i.test(line.trim()));
+  const categoryNames = new Set<string>();
+
+  if (tocIndex >= 0) {
+    for (let i = tocIndex + 1; i < lines.length; i += 1) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      if (/^##\s+/.test(line)) break;
+      if (/^\*+\s*\*+\s*\*+/.test(line)) break;
+      const headingMatch = line.match(/^###\s+(.+)$/);
+      if (headingMatch) {
+        categoryNames.add(cleanInline(headingMatch[1]));
+      }
+    }
+  }
+
+  const groups: Array<{ category: string; tools: Array<{ name: string; description: string; tags: string[]; url?: string }> }> = [];
+  let currentCategory: string | null = null;
+
+  for (let i = 0; i < lines.length; i += 1) {
+    const line = lines[i].trim();
+    const headingMatch = line.match(/^###\s+(.+)$/);
+    if (!headingMatch) continue;
+
+    const headingText = cleanInline(headingMatch[1]);
+    if (categoryNames.size === 0 && !currentCategory) {
+      currentCategory = headingText;
+      groups.push({ category: currentCategory, tools: [] });
+      continue;
+    }
+
+    if (categoryNames.has(headingText)) {
+      currentCategory = headingText;
+      if (!groups.some((group) => group.category === currentCategory)) {
+        groups.push({ category: currentCategory, tools: [] });
+      }
+      continue;
+    }
+
+    if (!currentCategory) {
+      currentCategory = 'Tools';
+      groups.push({ category: currentCategory, tools: [] });
+    }
+
+    const sectionLines: string[] = [];
+    for (let j = i + 1; j < lines.length; j += 1) {
+      const nextLine = lines[j].trim();
+      if (/^###\s+/.test(nextLine)) {
+        break;
+      }
+      sectionLines.push(lines[j]);
+    }
+
+    const firstTextLine = sectionLines
+      .map((text) => text.trim())
+      .filter((text) => text.length > 0 && !/^🔗/.test(text))
+      .find(Boolean);
+
+    const linkMatch = sectionLines
+      .map((text) => text.match(/\[(.+?)\]\((https?:\/\/[^)]+)\)/))
+      .find((match) => match);
+
+    let description = firstTextLine ? cleanInline(firstTextLine) : 'Part of the core stack.';
+    description = description.replace(new RegExp(`^\\*\\*${headingText}\\*\\*\\s*`, 'i'), '').trim();
+    const url = linkMatch ? linkMatch[2] : undefined;
+
+    const tool = {
+      name: headingText,
+      description: description || 'Part of the core stack.',
+      tags: dedupeTags([currentCategory]),
+      url
+    };
+
+    const group = groups.find((entry) => entry.category === currentCategory);
+    if (group) {
+      group.tools.push(tool);
+    }
+  }
+
+  return groups.filter((group) => group.tools.length > 0);
+}
+
 export function parseReadme(markdown: string, fallbackValueProp: string): ParsedReadme {
   const sections = splitIntoSections(markdown);
   const introSection = sections.find((section) => section.title.toLowerCase() === 'intro') || sections[0];
@@ -194,10 +288,14 @@ export function parseReadme(markdown: string, fallbackValueProp: string): Parsed
     }
   }
 
+  const toolGroups = parseToolGroupsFromReadme(markdown);
+  const flattenedTools = toolGroups.flatMap((group) => group.tools);
+
   return {
     intro,
     valueProposition,
     sections,
-    tools
+    tools: flattenedTools.length > 0 ? flattenedTools : tools,
+    toolGroups
   };
 }

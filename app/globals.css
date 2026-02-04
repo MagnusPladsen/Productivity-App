@@ -13,10 +13,10 @@
 body {
   min-height: 100vh;
   background:
-    radial-gradient(1200px 500px at 10% -10%, #ffe29a 0%, transparent 60%),
-    radial-gradient(800px 400px at 90% 0%, #ffb199 0%, transparent 55%),
-    linear-gradient(180deg, #f7f3ee 0%, #efe9e1 45%, #f7f3ee 100%);
-  color: #0b0b0f;
+    radial-gradient(1200px 500px at 10% -10%, rgba(255, 179, 102, 0.18) 0%, transparent 60%),
+    radial-gradient(800px 400px at 90% 0%, rgba(79, 163, 255, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, #0b0d10 0%, #0f141b 45%, #0b0d10 100%);
+  color: #f6f3ee;
 }
 
 .fade-rise {
@@ -93,7 +93,7 @@ body {
 }
 
 .section-card {
-  @apply rounded-3xl border border-black/5 bg-white/70 backdrop-blur-xl shadow-card;
+  @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-card;
 }
 
 .section-title {
@@ -101,5 +101,5 @@ body {
 }
 
 .eyebrow {
-  @apply uppercase text-xs tracking-[0.2em] text-black/60 font-semibold;
+  @apply uppercase text-xs tracking-[0.2em] text-white/60 font-semibold;
 }

@@ -4,6 +4,8 @@ import ToolCard from '@/components/ToolCard';
 import { formatDate, formatNumber } from '@/lib/format';
 import { getRepoData } from '@/lib/github';
 import Image from 'next/image';
+import Nav from '@/components/Nav';
+import Link from 'next/link';
 
 export const revalidate = 21600;
 
@@ -115,7 +117,7 @@ function renderBlocks(markdown: string) {
       return (
         <blockquote
           key={`quote-${index}`}
-          className="rounded-2xl border border-black/10 bg-white/60 px-6 py-4 text-sm text-black/70"
+          className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-sm text-white/70"
         >
           {block.text}
         </blockquote>
@@ -124,7 +126,7 @@ function renderBlocks(markdown: string) {
     return (
       <pre
         key={`code-${index}`}
-        className="overflow-x-auto rounded-2xl border border-black/10 bg-black/90 px-6 py-4 text-xs text-white/90"
+        className="overflow-x-auto rounded-2xl border border-white/10 bg-black/70 px-6 py-4 text-xs text-white/90"
       >
         <code>{block.text}</code>
       </pre>
@@ -168,63 +170,62 @@ export default async function Home() {
     ...tool,
     url: tool.url ?? undefined
   }));
+  const featuredTools = tools.slice(0, 6);
   const whyContent = getSectionContent(parsed.sections, ['why', 'philosophy', 'principles']);
   const installContent = getSectionContent(parsed.sections, ['install', 'usage', 'how', 'getting started']);
   const contributingContent = getSectionContent(parsed.sections, ['contributing', 'contribute']);
   const workflowContent = getSectionContent(parsed.sections, ['workflow', 'system', 'architecture', 'stack']);
   const refreshToken = process.env.NEXT_PUBLIC_REVALIDATE_TOKEN;
-  const allTags = tools.flatMap((tool) => tool.tags);
-  const tagCounts = allTags.reduce<Record<string, number>>((acc, tag) => {
-    acc[tag] = (acc[tag] ?? 0) + 1;
-    return acc;
-  }, {});
-  const topTags = Object.entries(tagCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
 
   return (
     <main className="bg-noise">
-      <div className="relative px-6 pb-24 pt-16 md:px-12">
+      <div className="relative px-6 pb-24 pt-10 md:px-12">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-32 top-16 h-64 w-64 rounded-full bg-ember/20 blur-3xl float-slow" />
           <div className="absolute right-0 top-32 h-72 w-72 rounded-full bg-glow/40 blur-3xl float-slow" />
         </div>
         <header className="mx-auto flex max-w-6xl flex-col gap-10">
-          <div className="flex flex-wrap items-center justify-between gap-6 fade-rise" data-delay="1">
-            <p className="eyebrow">Productivity Stack</p>
-            {refreshToken ? <RefreshButton token={refreshToken} /> : null}
+          <div className="fade-rise" data-delay="1">
+            <Nav repoUrl={repo.htmlUrl} />
           </div>
           <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="space-y-6 fade-rise" data-delay="2">
-              <div className="inline-flex items-center gap-3 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-black/60">
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
                 {repo.owner.avatarUrl ? (
                   <Image
                     src={repo.owner.avatarUrl}
                     alt={repo.owner.login}
                     width={24}
                     height={24}
-                    className="h-6 w-6 rounded-full border border-black/10"
+                    className="h-6 w-6 rounded-full border border-white/10"
                   />
                 ) : null}
                 {repo.owner.login}
               </div>
               <h1 className="font-display text-4xl md:text-6xl leading-tight">
                 {repo.name}
-                <span className="block text-black/50">{parsed.valueProposition}</span>
+                <span className="block text-white/60">{parsed.valueProposition}</span>
               </h1>
-              <p className="text-lg text-black/70 leading-relaxed">
+              <p className="text-lg text-white/70 leading-relaxed">
                 {repo.description}
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <a
                   href={repo.htmlUrl}
-                  className="rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-black/90"
+                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-black/40 transition hover:-translate-y-0.5 hover:bg-white/90"
                 >
                   View on GitHub
                 </a>
-                <div className="rounded-full border border-black/10 bg-white/70 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-black/50">
+                <Link
+                  href="/tools"
+                  className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40 hover:bg-white/20"
+                >
+                  Browse tools
+                </Link>
+                <div className="rounded-full border border-white/20 bg-white/5 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
                   Last updated {formatDate(repo.updatedAt)}
                 </div>
+                {refreshToken ? <RefreshButton token={refreshToken} /> : null}
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-2 fade-rise" data-delay="3">
@@ -236,41 +237,31 @@ export default async function Home() {
           </div>
         </header>
 
-        <section className="mx-auto mt-20 max-w-6xl space-y-10 fade-rise" data-delay="4">
+        <section className="mx-auto mt-16 max-w-6xl space-y-10 fade-rise" data-delay="4">
           <div className="section-card p-8 md:p-12">
             <p className="eyebrow">Why this stack</p>
             <h2 className="section-title mt-4">Clarity, momentum, and systems you can trust.</h2>
-            <div className="mt-6 space-y-4 text-base text-black/70">
+            <div className="mt-6 space-y-4 text-base text-white/70">
               {renderBlocks(whyContent || parsed.intro)}
             </div>
           </div>
         </section>
 
-        <section className="mx-auto mt-16 max-w-6xl fade-rise" data-delay="5">
+        <section className="mx-auto mt-14 max-w-6xl fade-rise" data-delay="5">
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p className="eyebrow">Tooling</p>
-              <h2 className="section-title mt-4">The tools that keep the system alive.</h2>
+              <p className="eyebrow">Featured tools</p>
+              <h2 className="section-title mt-4">A preview of the stack.</h2>
             </div>
-            <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.2em] text-black/60">
-              <span className="rounded-full border border-black/10 bg-white/70 px-4 py-2 font-semibold">
-                {tools.length} tools
-              </span>
-              <span className="rounded-full border border-black/10 bg-white/70 px-4 py-2 font-semibold">
-                {Object.keys(tagCounts).length || '0'} categories
-              </span>
-              {topTags.map(([tag]) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-black/10 bg-black/5 px-4 py-2 font-semibold"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            <Link
+              href="/tools"
+              className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40 hover:bg-white/20"
+            >
+              View all tools
+            </Link>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {tools.map((tool) => (
+            {featuredTools.map((tool) => (
               <ToolCard
                 key={tool.name}
                 name={tool.name}
@@ -286,7 +277,7 @@ export default async function Home() {
           <div className="section-card p-8 md:p-10">
             <p className="eyebrow">How to use</p>
             <h2 className="section-title mt-4">Make the stack yours in minutes.</h2>
-            <div className="mt-6 space-y-4 text-base text-black/70">
+            <div className="mt-6 space-y-4 text-base text-white/70">
               {renderBlocks(
                 installContent ||
                   'Install the tools, connect the workflows, and tune the system to your weekly rhythm.'
@@ -296,7 +287,7 @@ export default async function Home() {
           <div className="section-card p-8 md:p-10">
             <p className="eyebrow">Contributing</p>
             <h2 className="section-title mt-4">Evolve the stack together.</h2>
-            <div className="mt-6 space-y-4 text-base text-black/70">
+            <div className="mt-6 space-y-4 text-base text-white/70">
               {renderBlocks(
                 contributingContent ||
                   'Open a pull request or share improvements. The stack grows as the community finds sharper workflows.'
@@ -310,16 +301,16 @@ export default async function Home() {
             <div className="section-card p-8 md:p-12">
               <p className="eyebrow">Stack Blueprint</p>
               <h2 className="section-title mt-4">A system you can run on autopilot.</h2>
-              <div className="mt-6 space-y-4 text-base text-black/70">
+              <div className="mt-6 space-y-4 text-base text-white/70">
                 {renderBlocks(workflowContent)}
               </div>
             </div>
           </section>
         ) : null}
 
-        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-6 text-sm text-black/60">
+        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-6 text-sm text-white/60">
           <span>Built from live GitHub data for {repo.fullName}.</span>
-          <a href={repo.htmlUrl} className="font-semibold text-black hover:text-black/70">
+          <a href={repo.htmlUrl} className="font-semibold text-white hover:text-white/70">
             Explore the repo
           </a>
         </footer>
