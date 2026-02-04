@@ -1,5 +1,4 @@
 import RefreshButton from '@/components/RefreshButton';
-import Stat from '@/components/Stat';
 import ToolCard from '@/components/ToolCard';
 import { formatDate, formatNumber } from '@/lib/format';
 import { getRepoData } from '@/lib/github';
@@ -171,6 +170,7 @@ export default async function Home() {
     url: tool.url ?? undefined
   }));
   const featuredTools = tools.slice(0, 6);
+  const categories = parsed.toolGroups.slice(0, 8).map((group) => group.category);
   const whyContent = getSectionContent(parsed.sections, ['why', 'philosophy', 'principles']);
   const installContent = getSectionContent(parsed.sections, ['install', 'usage', 'how', 'getting started']);
   const contributingContent = getSectionContent(parsed.sections, ['contributing', 'contribute']);
@@ -202,11 +202,11 @@ export default async function Home() {
                 ) : null}
                 {repo.owner.login}
               </div>
-              <h1 className="font-display text-4xl md:text-6xl leading-tight">
+              <h1 className="font-display text-4xl md:text-5xl leading-tight">
                 {repo.name}
                 <span className="block text-white/60">{parsed.valueProposition}</span>
               </h1>
-              <p className="text-lg text-white/70 leading-relaxed">
+              <p className="text-base md:text-lg text-white/70 leading-relaxed">
                 {repo.description}
               </p>
               <div className="flex flex-wrap items-center gap-4">
@@ -228,11 +228,43 @@ export default async function Home() {
                 {refreshToken ? <RefreshButton token={refreshToken} /> : null}
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 fade-rise" data-delay="3">
-              <Stat label="Stars" value={formatNumber(repo.stars)} />
-              <Stat label="Forks" value={formatNumber(repo.forks)} />
-              <Stat label="Open Issues" value={formatNumber(repo.openIssues)} />
-              <Stat label="Repo" value={repo.fullName} />
+            <div className="space-y-6 fade-rise" data-delay="3">
+              <div className="section-card p-6">
+                <p className="eyebrow">Stack snapshot</p>
+                <div className="mt-4 grid gap-3 text-sm text-white/70">
+                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <span>Stars</span>
+                    <span className="font-semibold text-white">{formatNumber(repo.stars)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <span>Forks</span>
+                    <span className="font-semibold text-white">{formatNumber(repo.forks)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <span>Open issues</span>
+                    <span className="font-semibold text-white">{formatNumber(repo.openIssues)}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                    <span>Repo</span>
+                    <span className="font-semibold text-white">{repo.fullName}</span>
+                  </div>
+                </div>
+              </div>
+              {categories.length > 0 ? (
+                <div className="section-card p-6">
+                  <p className="eyebrow">Categories</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {categories.map((category) => (
+                      <span
+                        key={category}
+                        className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </header>
