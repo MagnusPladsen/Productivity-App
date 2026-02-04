@@ -5,11 +5,22 @@ import RefreshButton from '@/components/RefreshButton';
 
 export const revalidate = 21600;
 
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
 export default async function ToolsPage() {
   const { repo, parsed } = await getRepoData();
   const groups = parsed.toolGroups;
   const hasTools = groups.length > 0;
   const refreshToken = process.env.NEXT_PUBLIC_REVALIDATE_TOKEN;
+  const categories = groups.map((group) => ({
+    name: group.category,
+    id: slugify(group.category)
+  }));
 
   return (
     <main className="bg-noise">
@@ -35,8 +46,24 @@ export default async function ToolsPage() {
           </section>
 
           {hasTools ? (
-            groups.map((group) => (
-              <section key={group.category} className="space-y-6">
+            <>
+              <section className="section-card p-6">
+                <p className="eyebrow">Jump to</p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  {categories.map((category) => (
+                    <a
+                      key={category.id}
+                      href={`#${category.id}`}
+                      className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40 hover:bg-white/15"
+                    >
+                      {category.name}
+                    </a>
+                  ))}
+                </div>
+              </section>
+
+              {groups.map((group) => (
+                <section key={group.category} id={slugify(group.category)} className="space-y-6 scroll-mt-24">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <p className="eyebrow">Category</p>
@@ -58,7 +85,8 @@ export default async function ToolsPage() {
                   ))}
                 </div>
               </section>
-            ))
+              ))}
+            </>
           ) : (
             <section className="section-card p-8 md:p-12">
               <h2 className="section-title">No tools detected yet.</h2>
