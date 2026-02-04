@@ -164,7 +164,7 @@ const fallbackTools: Tool[] = [
 ];
 
 export default async function Home() {
-  const { repo, parsed } = await getRepoData();
+  const { repo, parsed, contributors } = await getRepoData();
   const tools: Tool[] = (parsed.tools.length > 0 ? parsed.tools : fallbackTools).map((tool) => ({
     ...tool,
     url: tool.url ?? undefined
@@ -335,6 +335,40 @@ export default async function Home() {
               <h2 className="section-title mt-4">A system you can run on autopilot.</h2>
               <div className="mt-6 space-y-4 text-base text-white/70">
                 {renderBlocks(workflowContent)}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {contributors.length > 0 ? (
+          <section className="mx-auto mt-16 max-w-6xl">
+            <div className="section-card p-8 md:p-12">
+              <p className="eyebrow">Contributors</p>
+              <h2 className="section-title mt-4">Built by the community.</h2>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {contributors.map((contributor) => (
+                  <a
+                    key={contributor.login}
+                    href={contributor.htmlUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/30 hover:bg-white/10"
+                  >
+                    <Image
+                      src={contributor.avatarUrl}
+                      alt={contributor.login}
+                      width={44}
+                      height={44}
+                      className="h-11 w-11 rounded-full border border-white/10"
+                    />
+                    <div>
+                      <div className="text-sm font-semibold text-white">{contributor.login}</div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-white/50">
+                        {contributor.contributions} contributions
+                      </div>
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
           </section>

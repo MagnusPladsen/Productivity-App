@@ -173,6 +173,7 @@ function parseToolTable(content: string): Array<{ name: string; description: str
 
 function cleanInline(text: string) {
   return text
+    .replace(/^-\s+\*\*\s*/g, '')
     .replace(/\*\*(.+?)\*\*/g, '$1')
     .replace(/`(.+?)`/g, '$1')
     .replace(/\[(.+?)\]\(.+?\)/g, '$1')
@@ -246,6 +247,7 @@ function parseToolGroupsFromReadme(markdown: string) {
 
     let description = firstTextLine ? cleanInline(firstTextLine) : 'Part of the core stack.';
     description = description.replace(new RegExp(`^\\*\\*${headingText}\\*\\*\\s*`, 'i'), '').trim();
+    description = description.replace(/^-\s+/, '').trim();
     const url = linkMatch ? linkMatch[2] : undefined;
 
     const tool = {
