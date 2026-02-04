@@ -14,18 +14,122 @@ function getSectionContent(sections: { title: string; content: string }[], keywo
   return match?.content ?? '';
 }
 
-function toParagraphs(markdown: string) {
-  return markdown
-    .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0)
-    .map((line) =>
-      line
-        .replace(/^[-*+]\s+/, '')
-        .replace(/`(.+?)`/g, '$1')
-        .replace(/\*\*(.+?)\*\*/g, '$1')
-        .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+type Block =
+  | { kind: 'p'; text: string }
+  | { kind: 'ul'; items: string[] }
+  | { kind: 'quote'; text: string }
+  | { kind: 'code'; text: string };
+
+function cleanInline(text: string) {
+  return text
+    .replace(/`(.+?)`/g, '$1')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseBlocks(markdown: string): Block[] {
+  const lines = markdown.split('\n');
+  const blocks: Block[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i].trim();
+    if (!line) {
+      i += 1;
+      continue;
+    }
+
+    if (line.startsWith('```')) {
+      const fence = line.slice(0, 3);
+      i += 1;
+      const codeLines: string[] = [];
+      while (i < lines.length && !lines[i].trim().startsWith(fence)) {
+        codeLines.push(lines[i]);
+        i += 1;
+      }
+      i += 1;
+      blocks.push({ kind: 'code', text: codeLines.join('\n') });
+      continue;
+    }
+
+    if (line.startsWith('>')) {
+      const quoteLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        quoteLines.push(lines[i].replace(/^>\s?/, ''));
+        i += 1;
+      }
+      blocks.push({ kind: 'quote', text: cleanInline(quoteLines.join(' ')) });
+      continue;
+    }
+
+    if (/^([-*+]|\d+\.)\s+/.test(line)) {
+      const items: string[] = [];
+      while (i < lines.length && /^([-*+]|\d+\.)\s+/.test(lines[i].trim())) {
+        items.push(cleanInline(lines[i].trim().replace(/^([-*+]|\d+\.)\s+/, '')));
+        i += 1;
+      }
+      blocks.push({ kind: 'ul', items });
+      continue;
+    }
+
+    const paragraphLines: string[] = [];
+    while (i < lines.length && lines[i].trim() && !lines[i].trim().startsWith('```')) {
+      if (
+        /^([-*+]|\d+\.)\s+/.test(lines[i].trim()) ||
+        lines[i].trim().startsWith('>') ||
+        lines[i].trim().startsWith('#')
+      ) {
+        break;
+      }
+      paragraphLines.push(lines[i].trim());
+      i += 1;
+    }
+    if (paragraphLines.length > 0) {
+      blocks.push({ kind: 'p', text: cleanInline(paragraphLines.join(' ')) });
+      continue;
+    }
+
+    i += 1;
+  }
+
+  return blocks;
+}
+
+function renderBlocks(markdown: string) {
+  return parseBlocks(markdown).map((block, index) => {
+    if (block.kind === 'p') {
+      return <p key={`p-${index}`}>{block.text}</p>;
+    }
+    if (block.kind === 'ul') {
+      return (
+        <ul key={`ul-${index}`} className="list-disc space-y-2 pl-5">
+          {block.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      );
+    }
+    if (block.kind === 'quote') {
+      return (
+        <blockquote
+          key={`quote-${index}`}
+          className="rounded-2xl border border-black/10 bg-white/60 px-6 py-4 text-sm text-black/70"
+        >
+          {block.text}
+        </blockquote>
+      );
+    }
+    return (
+      <pre
+        key={`code-${index}`}
+        className="overflow-x-auto rounded-2xl border border-black/10 bg-black/90 px-6 py-4 text-xs text-white/90"
+      >
+        <code>{block.text}</code>
+      </pre>
     );
+  });
 }
 
 type Tool = {
@@ -69,6 +173,14 @@ export default async function Home() {
   const contributingContent = getSectionContent(parsed.sections, ['contributing', 'contribute']);
   const workflowContent = getSectionContent(parsed.sections, ['workflow', 'system', 'architecture', 'stack']);
   const refreshToken = process.env.NEXT_PUBLIC_REVALIDATE_TOKEN;
+  const allTags = tools.flatMap((tool) => tool.tags);
+  const tagCounts = allTags.reduce<Record<string, number>>((acc, tag) => {
+    acc[tag] = (acc[tag] ?? 0) + 1;
+    return acc;
+  }, {});
+  const topTags = Object.entries(tagCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
 
   return (
     <main className="bg-noise">
@@ -129,18 +241,32 @@ export default async function Home() {
             <p className="eyebrow">Why this stack</p>
             <h2 className="section-title mt-4">Clarity, momentum, and systems you can trust.</h2>
             <div className="mt-6 space-y-4 text-base text-black/70">
-              {toParagraphs(whyContent || parsed.intro).map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
+              {renderBlocks(whyContent || parsed.intro)}
             </div>
           </div>
         </section>
 
         <section className="mx-auto mt-16 max-w-6xl fade-rise" data-delay="5">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
               <p className="eyebrow">Tooling</p>
               <h2 className="section-title mt-4">The tools that keep the system alive.</h2>
+            </div>
+            <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.2em] text-black/60">
+              <span className="rounded-full border border-black/10 bg-white/70 px-4 py-2 font-semibold">
+                {tools.length} tools
+              </span>
+              <span className="rounded-full border border-black/10 bg-white/70 px-4 py-2 font-semibold">
+                {Object.keys(tagCounts).length || '0'} categories
+              </span>
+              {topTags.map(([tag]) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-black/10 bg-black/5 px-4 py-2 font-semibold"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
           </div>
           <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -161,10 +287,9 @@ export default async function Home() {
             <p className="eyebrow">How to use</p>
             <h2 className="section-title mt-4">Make the stack yours in minutes.</h2>
             <div className="mt-6 space-y-4 text-base text-black/70">
-              {toParagraphs(installContent || 'Install the tools, connect the workflows, and tune the system to your weekly rhythm.').map(
-                (paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                )
+              {renderBlocks(
+                installContent ||
+                  'Install the tools, connect the workflows, and tune the system to your weekly rhythm.'
               )}
             </div>
           </div>
@@ -172,10 +297,9 @@ export default async function Home() {
             <p className="eyebrow">Contributing</p>
             <h2 className="section-title mt-4">Evolve the stack together.</h2>
             <div className="mt-6 space-y-4 text-base text-black/70">
-              {toParagraphs(contributingContent || 'Open a pull request or share improvements. The stack grows as the community finds sharper workflows.').map(
-                (paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                )
+              {renderBlocks(
+                contributingContent ||
+                  'Open a pull request or share improvements. The stack grows as the community finds sharper workflows.'
               )}
             </div>
           </div>
@@ -187,9 +311,7 @@ export default async function Home() {
               <p className="eyebrow">Stack Blueprint</p>
               <h2 className="section-title mt-4">A system you can run on autopilot.</h2>
               <div className="mt-6 space-y-4 text-base text-black/70">
-                {toParagraphs(workflowContent).map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+                {renderBlocks(workflowContent)}
               </div>
             </div>
           </section>
