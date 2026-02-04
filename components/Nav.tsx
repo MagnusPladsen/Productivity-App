@@ -17,6 +17,9 @@ export default function Nav({ repoUrl }: NavProps) {
         <Link href="/tools" className="transition hover:text-white">
           Tools
         </Link>
+        <a href="https://pladsen.dev" className="transition hover:text-white" target="_blank" rel="noreferrer">
+          Portfolio
+        </a>
         <a href={repoUrl} className="transition hover:text-white" target="_blank" rel="noreferrer">
           GitHub
         </a>

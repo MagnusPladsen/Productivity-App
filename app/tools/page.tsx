@@ -2,6 +2,7 @@ import Nav from '@/components/Nav';
 import ToolCard from '@/components/ToolCard';
 import { getRepoData } from '@/lib/github';
 import RefreshButton from '@/components/RefreshButton';
+import ToolNavigator, { type NavItem } from '@/components/ToolNavigator';
 
 export const revalidate = 21600;
 
@@ -21,6 +22,22 @@ export default async function ToolsPage() {
     name: group.category,
     id: slugify(group.category)
   }));
+  const navItems: NavItem[] = groups.flatMap((group) => {
+    const categoryId = slugify(group.category);
+    const categoryItem: NavItem = {
+      id: categoryId,
+      label: group.category,
+      kind: 'category',
+      category: group.category
+    };
+    const toolItems: NavItem[] = group.tools.map((tool) => ({
+      id: slugify(`${group.category}-${tool.name}`),
+      label: tool.name,
+      kind: 'tool',
+      category: group.category
+    }));
+    return [categoryItem, ...toolItems];
+  });
 
   return (
     <main className="bg-noise">
@@ -63,7 +80,11 @@ export default async function ToolsPage() {
               </section>
 
               {groups.map((group) => (
-                <section key={group.category} id={slugify(group.category)} className="space-y-6 scroll-mt-24">
+                <section
+                  key={group.category}
+                  id={slugify(group.category)}
+                  className="space-y-6 scroll-mt-24"
+                >
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <p className="eyebrow">Category</p>
@@ -75,13 +96,13 @@ export default async function ToolsPage() {
                 </div>
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {group.tools.map((tool) => (
-                    <ToolCard
+                    <div
                       key={`${group.category}-${tool.name}`}
-                      name={tool.name}
-                      description={tool.description}
-                      tags={tool.tags}
-                      url={tool.url}
-                    />
+                      id={slugify(`${group.category}-${tool.name}`)}
+                      className="scroll-mt-24"
+                    >
+                      <ToolCard name={tool.name} description={tool.description} tags={tool.tags} url={tool.url} />
+                    </div>
                   ))}
                 </div>
               </section>
@@ -98,6 +119,7 @@ export default async function ToolsPage() {
           )}
         </div>
       </div>
+      {hasTools ? <ToolNavigator items={navItems} /> : null}
     </main>
   );
 }
