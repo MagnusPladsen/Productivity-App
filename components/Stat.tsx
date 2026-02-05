@@ -5,9 +5,9 @@ type StatProps = {
 
 export default function Stat({ label, value }: StatProps) {
   return (
-    <div className="rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
-      <div className="text-lg font-semibold text-white">{value}</div>
-      <div className="text-xs uppercase tracking-[0.2em] text-white/50">{label}</div>
+    <div className="rounded-2xl bg-paper border border-ink/10 px-4 py-3 shadow-lift">
+      <div className="text-lg font-semibold text-ink">{value}</div>
+      <div className="text-xs uppercase tracking-[0.2em] text-ink/50">{label}</div>
     </div>
   );
 }

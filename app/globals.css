@@ -12,47 +12,82 @@
 
 body {
   min-height: 100vh;
+  background: #f7f2ea;
+  color: #191611;
+}
+
+.page-shell {
+  position: relative;
+  overflow: hidden;
   background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(255, 179, 102, 0.18) 0%, transparent 60%),
-    radial-gradient(800px 400px at 90% 0%, rgba(79, 163, 255, 0.18) 0%, transparent 55%),
-    linear-gradient(180deg, #0b0d10 0%, #0f141b 45%, #0b0d10 100%);
-  color: #f6f3ee;
+    radial-gradient(900px 500px at 5% -10%, rgba(244, 91, 57, 0.18) 0%, transparent 60%),
+    radial-gradient(700px 520px at 95% 8%, rgba(47, 123, 123, 0.2) 0%, transparent 55%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(246, 241, 232, 0.95) 45%, rgba(236, 228, 214, 0.95) 100%);
+}
+
+.page-shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23noise)' opacity='0.18'/%3E%3C/svg%3E");
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.page-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.6) 0%, transparent 60%),
+    radial-gradient(400px 300px at 12% 85%, rgba(240, 180, 41, 0.25) 0%, transparent 65%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.grain-layer {
+  position: relative;
+  z-index: 1;
 }
 
 .fade-rise {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(16px);
   animation: fadeRise 0.9s ease-out forwards;
 }
 
 .fade-rise[data-delay='1'] {
-  animation-delay: 0.1s;
+  animation-delay: 0.12s;
 }
 
 .fade-rise[data-delay='2'] {
-  animation-delay: 0.2s;
+  animation-delay: 0.24s;
 }
 
 .fade-rise[data-delay='3'] {
-  animation-delay: 0.3s;
+  animation-delay: 0.36s;
 }
 
 .fade-rise[data-delay='4'] {
-  animation-delay: 0.4s;
+  animation-delay: 0.48s;
 }
 
 .fade-rise[data-delay='5'] {
-  animation-delay: 0.5s;
+  animation-delay: 0.6s;
 }
 
 .float-slow {
-  animation: floatSlow 10s ease-in-out infinite;
+  animation: floatSlow 12s ease-in-out infinite;
+}
+
+.swirl-slow {
+  animation: swirlSlow 14s ease-in-out infinite;
 }
 
 @keyframes fadeRise {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -66,40 +101,58 @@ body {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-12px);
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes swirlSlow {
+  0%,
+  100% {
+    transform: rotate(-1deg) translateY(0);
+  }
+  50% {
+    transform: rotate(1.5deg) translateY(-6px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .fade-rise,
-  .float-slow {
+  .float-slow,
+  .swirl-slow {
     animation: none;
     opacity: 1;
     transform: none;
   }
 }
 
-.bg-noise {
-  position: relative;
-}
-
-.bg-noise::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg width='160' height='160' viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
-  pointer-events: none;
-  mix-blend-mode: soft-light;
-}
-
 .section-card {
-  @apply rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-card;
+  @apply rounded-[28px] border border-ink/10 bg-paper/90 shadow-card backdrop-blur-md;
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl font-display tracking-tight;
+  @apply text-3xl md:text-4xl font-display tracking-tight text-ink;
 }
 
 .eyebrow {
-  @apply uppercase text-xs tracking-[0.2em] text-white/60 font-semibold;
+  @apply uppercase text-xs tracking-[0.28em] text-ink/60 font-semibold;
+}
+
+.chip {
+  @apply rounded-full border border-ink/15 bg-paper/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/70;
+}
+
+.grid-stamp {
+  background-image:
+    linear-gradient(rgba(17, 17, 15, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 15, 0.08) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.stamp {
+  @apply rounded-full border border-ink/15 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-ink/70;
+}
+
+.paper-panel {
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.82) 0%, rgba(246, 241, 232, 0.92) 100%);
 }

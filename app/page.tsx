@@ -5,6 +5,7 @@ import { getRepoData } from '@/lib/github';
 import Image from 'next/image';
 import Nav from '@/components/Nav';
 import Link from 'next/link';
+import HeroDataStrip from '@/components/HeroDataStrip';
 
 export const revalidate = 21600;
 
@@ -105,7 +106,7 @@ function renderBlocks(markdown: string) {
     }
     if (block.kind === 'ul') {
       return (
-        <ul key={`ul-${index}`} className="list-disc space-y-2 pl-5">
+        <ul key={`ul-${index}`} className="list-disc space-y-2 pl-5 text-ink/70">
           {block.items.map((item) => (
             <li key={item}>{item}</li>
           ))}
@@ -116,7 +117,7 @@ function renderBlocks(markdown: string) {
       return (
         <blockquote
           key={`quote-${index}`}
-          className="rounded-2xl border border-white/15 bg-white/5 px-6 py-4 text-sm text-white/70"
+          className="rounded-2xl border border-ink/10 bg-paper/80 px-6 py-4 text-sm text-ink/70 shadow-lift"
         >
           {block.text}
         </blockquote>
@@ -125,7 +126,7 @@ function renderBlocks(markdown: string) {
     return (
       <pre
         key={`code-${index}`}
-        className="overflow-x-auto rounded-2xl border border-white/10 bg-black/70 px-6 py-4 text-xs text-white/90"
+        className="overflow-x-auto rounded-2xl border border-ink/15 bg-ink px-6 py-4 text-xs text-paper/90 shadow-lift"
       >
         <code>{block.text}</code>
       </pre>
@@ -176,13 +177,19 @@ export default async function Home() {
   const contributingContent = getSectionContent(parsed.sections, ['contributing', 'contribute']);
   const workflowContent = getSectionContent(parsed.sections, ['workflow', 'system', 'architecture', 'stack']);
   const refreshToken = process.env.NEXT_PUBLIC_REVALIDATE_TOKEN;
+  const stripItems = [
+    { label: 'Stars', value: formatNumber(repo.stars), emphasis: true },
+    { label: 'Forks', value: formatNumber(repo.forks) },
+    { label: 'Open issues', value: formatNumber(repo.openIssues) },
+    { label: 'Repo', value: repo.fullName }
+  ];
 
   return (
-    <main className="bg-noise">
-      <div className="relative px-6 pb-24 pt-10 md:px-12">
+    <main className="page-shell">
+      <div className="relative px-6 pb-24 pt-10 md:px-12 grain-layer">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-32 top-16 h-64 w-64 rounded-full bg-ember/20 blur-3xl float-slow" />
-          <div className="absolute right-0 top-32 h-72 w-72 rounded-full bg-glow/40 blur-3xl float-slow" />
+          <div className="absolute -left-40 top-12 h-72 w-72 rounded-full bg-ember/25 blur-3xl float-slow" />
+          <div className="absolute right-0 top-24 h-80 w-80 rounded-full bg-sea/25 blur-3xl swirl-slow" />
         </div>
         <header className="mx-auto flex max-w-6xl flex-col gap-10">
           <div className="fade-rise" data-delay="1">
@@ -190,74 +197,76 @@ export default async function Home() {
           </div>
           <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="space-y-6 fade-rise" data-delay="2">
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/60">
+              <div className="inline-flex items-center gap-3 rounded-full border border-ink/15 bg-paper/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-ink/60">
                 {repo.owner.avatarUrl ? (
                   <Image
                     src={repo.owner.avatarUrl}
                     alt={repo.owner.login}
                     width={24}
                     height={24}
-                    className="h-6 w-6 rounded-full border border-white/10"
+                    className="h-6 w-6 rounded-full border border-ink/10"
                   />
                 ) : null}
                 {repo.owner.login}
               </div>
-              <h1 className="font-display text-4xl md:text-5xl leading-tight">
+              <h1 className="font-display text-4xl md:text-6xl leading-tight text-ink">
                 {repo.name}
-                <span className="block text-white/60">{parsed.valueProposition}</span>
+                <span className="block text-ink/60">{parsed.valueProposition}</span>
               </h1>
-              <p className="text-base md:text-lg text-white/70 leading-relaxed">
+              <p className="text-base md:text-lg text-ink/70 leading-relaxed">
                 {repo.description}
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <a
                   href={repo.htmlUrl}
-                  className="rounded-full bg-white px-6 py-3 text-sm font-semibold text-black shadow-lg shadow-black/40 transition hover:-translate-y-0.5 hover:bg-white/90"
+                  className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-lift transition hover:-translate-y-0.5 hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                 >
                   View on GitHub
                 </a>
                 <Link
                   href="/tools"
-                  className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40 hover:bg-white/20"
+                  className="rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                 >
                   Browse tools
                 </Link>
-                <div className="rounded-full border border-white/20 bg-white/5 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/50">
-                  Last updated {formatDate(repo.updatedAt)}
-                </div>
                 {refreshToken ? <RefreshButton token={refreshToken} /> : null}
               </div>
+              <HeroDataStrip
+                items={stripItems}
+                updatedAtLabel={formatDate(repo.updatedAt)}
+                repoFullName={repo.fullName}
+              />
             </div>
             <div className="space-y-6 fade-rise" data-delay="3">
-              <div className="section-card p-6">
+              <div className="section-card p-6 paper-panel">
                 <p className="eyebrow">Stack snapshot</p>
-                <div className="mt-4 grid gap-3 text-sm text-white/70">
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <div className="mt-4 grid gap-3 text-sm text-ink/70">
+                  <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper px-4 py-3">
                     <span>Stars</span>
-                    <span className="font-semibold text-white">{formatNumber(repo.stars)}</span>
+                    <span className="font-semibold text-ink">{formatNumber(repo.stars)}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper px-4 py-3">
                     <span>Forks</span>
-                    <span className="font-semibold text-white">{formatNumber(repo.forks)}</span>
+                    <span className="font-semibold text-ink">{formatNumber(repo.forks)}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper px-4 py-3">
                     <span>Open issues</span>
-                    <span className="font-semibold text-white">{formatNumber(repo.openIssues)}</span>
+                    <span className="font-semibold text-ink">{formatNumber(repo.openIssues)}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-2xl border border-ink/10 bg-paper px-4 py-3">
                     <span>Repo</span>
-                    <span className="font-semibold text-white">{repo.fullName}</span>
+                    <span className="font-semibold text-ink">{repo.fullName}</span>
                   </div>
                 </div>
               </div>
               {categories.length > 0 ? (
-                <div className="section-card p-6">
+                <div className="section-card p-6 paper-panel">
                   <p className="eyebrow">Categories</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {categories.map((category) => (
                       <span
                         key={category}
-                        className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/60"
+                        className="chip"
                       >
                         {category}
                       </span>
@@ -270,10 +279,10 @@ export default async function Home() {
         </header>
 
         <section className="mx-auto mt-16 max-w-6xl space-y-10 fade-rise" data-delay="4">
-          <div className="section-card p-8 md:p-12">
+          <div className="section-card p-8 md:p-12 grid-stamp">
             <p className="eyebrow">Why this stack</p>
             <h2 className="section-title mt-4">Clarity, momentum, and systems you can trust.</h2>
-            <div className="mt-6 space-y-4 text-base text-white/70">
+            <div className="mt-6 space-y-4 text-base text-ink/70">
               {renderBlocks(whyContent || parsed.intro)}
             </div>
           </div>
@@ -287,7 +296,7 @@ export default async function Home() {
             </div>
             <Link
               href="/tools"
-              className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40 hover:bg-white/20"
+              className="rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80"
             >
               View all tools
             </Link>
@@ -309,7 +318,7 @@ export default async function Home() {
           <div className="section-card p-8 md:p-10">
             <p className="eyebrow">How to use</p>
             <h2 className="section-title mt-4">Make the stack yours in minutes.</h2>
-            <div className="mt-6 space-y-4 text-base text-white/70">
+            <div className="mt-6 space-y-4 text-base text-ink/70">
               {renderBlocks(
                 installContent ||
                   'Install the tools, connect the workflows, and tune the system to your weekly rhythm.'
@@ -319,7 +328,7 @@ export default async function Home() {
           <div className="section-card p-8 md:p-10">
             <p className="eyebrow">Contributing</p>
             <h2 className="section-title mt-4">Evolve the stack together.</h2>
-            <div className="mt-6 space-y-4 text-base text-white/70">
+            <div className="mt-6 space-y-4 text-base text-ink/70">
               {renderBlocks(
                 contributingContent ||
                   'Open a pull request or share improvements. The stack grows as the community finds sharper workflows.'
@@ -333,7 +342,7 @@ export default async function Home() {
             <div className="section-card p-8 md:p-12">
               <p className="eyebrow">Stack Blueprint</p>
               <h2 className="section-title mt-4">A system you can run on autopilot.</h2>
-              <div className="mt-6 space-y-4 text-base text-white/70">
+              <div className="mt-6 space-y-4 text-base text-ink/70">
                 {renderBlocks(workflowContent)}
               </div>
             </div>
@@ -352,18 +361,18 @@ export default async function Home() {
                     href={contributor.htmlUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition hover:border-white/30 hover:bg-white/10"
+                    className="flex items-center gap-4 rounded-2xl border border-ink/10 bg-paper px-4 py-3 transition hover:border-ink/30 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                   >
                     <Image
                       src={contributor.avatarUrl}
                       alt={contributor.login}
                       width={44}
                       height={44}
-                      className="h-11 w-11 rounded-full border border-white/10"
+                      className="h-11 w-11 rounded-full border border-ink/10"
                     />
                     <div>
-                      <div className="text-sm font-semibold text-white">{contributor.login}</div>
-                      <div className="text-xs uppercase tracking-[0.2em] text-white/50">
+                      <div className="text-sm font-semibold text-ink">{contributor.login}</div>
+                      <div className="text-xs uppercase tracking-[0.2em] text-ink/50">
                         {contributor.contributions} contributions
                       </div>
                     </div>
@@ -374,9 +383,12 @@ export default async function Home() {
           </section>
         ) : null}
 
-        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-6 text-sm text-white/60">
+        <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-6 text-sm text-ink/60">
           <span>Built from live GitHub data for {repo.fullName}.</span>
-          <a href={repo.htmlUrl} className="font-semibold text-white hover:text-white/70">
+          <a
+            href={repo.htmlUrl}
+            className="font-semibold text-ink hover:text-ink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+          >
             Explore the repo
           </a>
         </footer>
