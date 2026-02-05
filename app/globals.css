@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {
@@ -12,17 +12,17 @@
 
 body {
   min-height: 100vh;
-  background: #f7f2ea;
-  color: #191611;
+  background: #0a0b10;
+  color: #f2eefc;
 }
 
 .page-shell {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(900px 500px at 5% -10%, rgba(244, 91, 57, 0.18) 0%, transparent 60%),
-    radial-gradient(700px 520px at 95% 8%, rgba(47, 123, 123, 0.2) 0%, transparent 55%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(246, 241, 232, 0.95) 45%, rgba(236, 228, 214, 0.95) 100%);
+    radial-gradient(1100px 520px at 10% -10%, rgba(123, 92, 255, 0.22) 0%, transparent 60%),
+    radial-gradient(820px 420px at 92% 6%, rgba(196, 155, 255, 0.2) 0%, transparent 55%),
+    linear-gradient(135deg, rgba(10, 11, 18, 0.98) 0%, rgba(15, 18, 30, 0.98) 45%, rgba(10, 11, 18, 0.98) 100%);
 }
 
 .page-shell::before {
@@ -31,7 +31,7 @@ body {
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg width='220' height='220' viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23noise)' opacity='0.18'/%3E%3C/svg%3E");
   pointer-events: none;
-  mix-blend-mode: multiply;
+  mix-blend-mode: soft-light;
 }
 
 .page-shell::after {
@@ -39,8 +39,8 @@ body {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.6) 0%, transparent 60%),
-    radial-gradient(400px 300px at 12% 85%, rgba(240, 180, 41, 0.25) 0%, transparent 65%);
+    linear-gradient(120deg, rgba(123, 92, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(420px 320px at 12% 85%, rgba(196, 155, 255, 0.2) 0%, transparent 65%);
   pointer-events: none;
   opacity: 0.7;
 }
@@ -126,7 +126,7 @@ body {
 }
 
 .section-card {
-  @apply rounded-[28px] border border-ink/10 bg-paper/90 shadow-card backdrop-blur-md;
+  @apply rounded-[28px] border border-ink/10 bg-paper/85 shadow-card backdrop-blur-md;
 }
 
 .section-title {
@@ -143,8 +143,8 @@ body {
 
 .grid-stamp {
   background-image:
-    linear-gradient(rgba(17, 17, 15, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(17, 17, 15, 0.08) 1px, transparent 1px);
+    linear-gradient(rgba(242, 238, 252, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(242, 238, 252, 0.08) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 
@@ -154,5 +154,5 @@ body {
 
 .paper-panel {
   background:
-    linear-gradient(120deg, rgba(255, 255, 255, 0.82) 0%, rgba(246, 241, 232, 0.92) 100%);
+    linear-gradient(120deg, rgba(15, 16, 28, 0.85) 0%, rgba(10, 11, 18, 0.95) 100%);
 }
