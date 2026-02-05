@@ -67,14 +67,14 @@ export default function ToolNavigator({ items }: ToolNavigatorProps) {
           id="tool-navigator"
           role="dialog"
           aria-label="Navigate tools"
-          className="w-[90vw] max-w-sm rounded-3xl border border-white/15 bg-black/80 p-4 shadow-2xl shadow-black/50 backdrop-blur-xl"
+          className="w-[90vw] max-w-sm rounded-[26px] border border-ink/10 bg-paper/95 p-4 shadow-2xl shadow-black/15 backdrop-blur-xl"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60">Go to</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-ink/60">Go to</span>
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs text-white/70 transition hover:border-white/40"
+              className="rounded-full border border-ink/10 bg-paper px-3 py-1 text-xs text-ink/70 transition hover:border-ink/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               Close
             </button>
@@ -85,7 +85,7 @@ export default function ToolNavigator({ items }: ToolNavigatorProps) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search categories or tools"
-              className="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none"
+              className="w-full rounded-2xl border border-ink/15 bg-paper px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-ink/40 focus:outline-none"
               role="combobox"
               aria-autocomplete="list"
               aria-expanded={filtered.length > 0}
@@ -96,15 +96,15 @@ export default function ToolNavigator({ items }: ToolNavigatorProps) {
             <button
               type="button"
               onClick={handleTop}
-              className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white/70 transition hover:border-white/40"
+              className="rounded-full border border-ink/15 bg-paper px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-ink/70 transition hover:border-ink/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               Back to top
             </button>
-            <span className="text-xs text-white/50">{filtered.length} results</span>
+            <span className="text-xs text-ink/50">{filtered.length} results</span>
           </div>
           <div id="tool-navigator-results" className="mt-4 max-h-64 space-y-2 overflow-y-auto pr-1">
             {filtered.length === 0 ? (
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/60">
+              <div className="rounded-2xl border border-ink/10 bg-paper px-4 py-3 text-sm text-ink/60">
                 No matches found.
               </div>
             ) : (
@@ -113,10 +113,10 @@ export default function ToolNavigator({ items }: ToolNavigatorProps) {
                   key={`${item.kind}-${item.id}`}
                   type="button"
                   onClick={() => handleJump(item.id)}
-                  className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-left text-sm text-white/80 transition hover:border-white/30 hover:bg-white/10"
+                  className="flex w-full items-center justify-between rounded-2xl border border-ink/10 bg-paper px-4 py-3 text-left text-sm text-ink/80 transition hover:border-ink/30 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                 >
                   <span className="font-medium">{item.label}</span>
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-white/50">
+                  <span className="text-[10px] uppercase tracking-[0.2em] text-ink/50">
                     {item.kind === 'category' ? 'Category' : item.category}
                   </span>
                 </button>
@@ -129,7 +129,7 @@ export default function ToolNavigator({ items }: ToolNavigatorProps) {
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className={`mt-4 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-white/70 shadow-2xl shadow-black/50 transition hover:border-white/40 hover:bg-white/20 ${
+        className={`mt-4 flex items-center gap-2 rounded-full border border-ink/20 bg-ink px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-paper shadow-2xl shadow-black/20 transition hover:border-ink/40 hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
           isVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-expanded={isOpen}

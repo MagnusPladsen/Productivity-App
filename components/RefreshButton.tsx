@@ -64,12 +64,12 @@ export default function RefreshButton({ token }: RefreshButtonProps) {
       <button
         type="button"
         onClick={handleRefresh}
-        className="rounded-full border border-white/20 bg-white/10 text-white px-5 py-2 text-sm font-semibold shadow-lg shadow-black/30 transition hover:-translate-y-0.5 hover:border-white/40 hover:bg-white/20 disabled:opacity-60"
+        className="rounded-full border border-ink/20 bg-ink px-5 py-2 text-sm font-semibold text-paper shadow-lift transition hover:-translate-y-0.5 hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:opacity-60"
         disabled={isPending || isCoolingDown}
       >
         {isPending ? 'Refreshing…' : isCoolingDown ? `Wait ${secondsLeft}s` : 'Refresh data'}
       </button>
-      {message ? <p className="text-xs text-white/60">{message}</p> : null}
+      {message ? <p className="text-xs text-ink/60">{message}</p> : null}
     </div>
   );
 }

@@ -5,17 +5,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        ink: '#0b0b0f',
-        mist: '#f5f3ef',
-        ember: '#ff6b3d',
-        glow: '#ffe29a'
+        ink: '#11110f',
+        paper: '#f6f1e8',
+        clay: '#e8dccc',
+        ember: '#f45b39',
+        sea: '#2f7b7b',
+        sun: '#f0b429'
       },
       fontFamily: {
         display: ['var(--font-display)', 'ui-serif', 'Georgia', 'serif'],
         body: ['var(--font-body)', 'system-ui', 'sans-serif']
       },
       boxShadow: {
-        card: '0 20px 60px rgba(15, 15, 30, 0.15)'
+        card: '0 25px 60px rgba(20, 15, 10, 0.18)',
+        lift: '0 12px 30px rgba(20, 15, 10, 0.15)'
       }
     }
   },
