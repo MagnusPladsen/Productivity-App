@@ -11,6 +11,9 @@ export default function PointerGlow() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (window.matchMedia('(pointer: coarse)').matches) return;
+    const stored = window.localStorage.getItem('cursor-enabled');
+    const isEnabled = stored !== 'off';
+    document.documentElement.setAttribute('data-cursor', isEnabled ? 'on' : 'off');
 
     const root = document.documentElement;
     const layer = layerRef.current;
@@ -26,22 +29,25 @@ export default function PointerGlow() {
     let currentY = targetY;
 
     const update = () => {
-      currentX += (targetX - currentX) * 0.18;
-      currentY += (targetY - currentY) * 0.18;
-      root.style.setProperty('--cursor-x', `${(currentX / window.innerWidth) * 100}%`);
-      root.style.setProperty('--cursor-y', `${(currentY / window.innerHeight) * 100}%`);
+      if (root.getAttribute('data-cursor') !== 'off') {
+        currentX += (targetX - currentX) * 0.18;
+        currentY += (targetY - currentY) * 0.18;
+        root.style.setProperty('--cursor-x', `${(currentX / window.innerWidth) * 100}%`);
+        root.style.setProperty('--cursor-y', `${(currentY / window.innerHeight) * 100}%`);
 
-      const orbOffset = 80;
-      const coreOffset = 14;
-      const iconOffset = 11;
-      orb.style.transform = `translate3d(${currentX - orbOffset}px, ${currentY - orbOffset}px, 0)`;
-      core.style.transform = `translate3d(${currentX - coreOffset}px, ${currentY - coreOffset}px, 0)`;
-      icon.style.transform = `translate3d(${currentX - iconOffset}px, ${currentY - iconOffset}px, 0)`;
+        const orbOffset = 80;
+        const coreOffset = 14;
+        const iconOffset = 11;
+        orb.style.transform = `translate3d(${currentX - orbOffset}px, ${currentY - orbOffset}px, 0)`;
+        core.style.transform = `translate3d(${currentX - coreOffset}px, ${currentY - coreOffset}px, 0)`;
+        icon.style.transform = `translate3d(${currentX - iconOffset}px, ${currentY - iconOffset}px, 0)`;
+      }
 
       rafId = requestAnimationFrame(update);
     };
 
     const handleMove = (event: PointerEvent) => {
+      if (root.getAttribute('data-cursor') === 'off') return;
       targetX = event.clientX;
       targetY = event.clientY;
       if (!layer.classList.contains('is-active')) {

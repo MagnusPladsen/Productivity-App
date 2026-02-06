@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import PointerGlow from '@/components/PointerGlow';
+import CursorHint from '@/components/CursorHint';
 
 const display = JetBrains_Mono({
   subsets: ['latin'],
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body className="font-body antialiased">
         <PointerGlow />
+        <CursorHint />
         {children}
       </body>
     </html>

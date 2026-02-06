@@ -335,6 +335,18 @@ button,
   }
 }
 
+[data-cursor='off'] body,
+[data-cursor='off'] a,
+[data-cursor='off'] button,
+[data-cursor='off'] [role='button'],
+[data-cursor='off'] .cursor-pointer {
+  cursor: auto;
+}
+
+[data-cursor='off'] .cursor-layer {
+  display: none;
+}
+
 .cursor-layer {
   position: fixed;
   inset: 0;
@@ -382,4 +394,24 @@ button,
 .cursor-layer.is-active .cursor-core,
 .cursor-layer.is-active .cursor-icon {
   opacity: 1;
+}
+
+.cursor-hint {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9998;
+  max-width: 280px;
+}
+
+.cursor-hint-card {
+  @apply rounded-2xl border border-ink/15 bg-paper/90 px-4 py-3 text-sm text-ink/70 shadow-lift backdrop-blur-md;
+}
+
+.cursor-hint-actions {
+  @apply mt-3 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-ink/70;
+}
+
+.cursor-toggle {
+  @apply rounded-full border border-ink/20 bg-paper px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80;
 }

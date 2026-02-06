@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import CursorToggle from '@/components/CursorToggle';
 
 type NavProps = {
   repoUrl: string;
@@ -23,6 +24,7 @@ export default function Nav({ repoUrl }: NavProps) {
         <a href={repoUrl} className="fancy-link transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper" target="_blank" rel="noreferrer">
           GitHub
         </a>
+        <CursorToggle />
       </div>
     </nav>
   );
