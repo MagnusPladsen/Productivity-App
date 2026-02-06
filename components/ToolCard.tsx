@@ -29,7 +29,7 @@ export default function ToolCard({ name, description, tags = [], url }: ToolCard
     return (
       <a
         href={url}
-        className="section-card group block cursor-pointer p-6 transition duration-300 hover:-translate-y-1 hover:border-ink/20 hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+        className="section-card glow-hover group block cursor-pointer p-6 transition duration-300 hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
         target="_blank"
         rel="noreferrer"
       >

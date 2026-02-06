@@ -11,16 +11,16 @@ export default function Nav({ repoUrl }: NavProps) {
         Productivity Stack
       </div>
       <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-ink/70">
-        <Link href="/" className="transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper">
+        <Link href="/" className="fancy-link transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper">
           Home
         </Link>
-        <Link href="/tools" className="transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper">
+        <Link href="/tools" className="fancy-link transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper">
           Tools
         </Link>
-        <a href="https://pladsen.dev" className="transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper" target="_blank" rel="noreferrer">
+        <a href="https://pladsen.dev" className="fancy-link transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper" target="_blank" rel="noreferrer">
           Portfolio
         </a>
-        <a href={repoUrl} className="transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper" target="_blank" rel="noreferrer">
+        <a href={repoUrl} className="fancy-link transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper" target="_blank" rel="noreferrer">
           GitHub
         </a>
       </div>

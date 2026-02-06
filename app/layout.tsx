@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
-import { Instrument_Serif, Karla } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import PointerGlow from '@/components/PointerGlow';
 
-const display = Instrument_Serif({
+const display = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['400']
+  weight: ['600', '700']
 });
 
-const body = Karla({
+const body = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-body',
-  weight: ['400', '500', '600', '700']
+  weight: ['400', '500', '600']
 });
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable}`}>
       <body className="font-body antialiased">
+        <PointerGlow />
         {children}
       </body>
     </html>

@@ -65,7 +65,7 @@ export default function CategoryIndex({
               key={category.id}
               href={`#${category.id}`}
               aria-current={isActive ? 'true' : undefined}
-              className={`chip cursor-pointer transition hover:border-ink/30 hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
+              className={`chip glow-hover cursor-pointer transition hover:border-ink/30 hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
                 isActive ? activeClass : ''
               }`}
             >

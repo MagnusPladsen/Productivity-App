@@ -219,13 +219,13 @@ export default async function Home() {
               <div className="flex flex-wrap items-center gap-4">
                 <a
                   href={repo.htmlUrl}
-                  className="rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-lift transition hover:-translate-y-0.5 hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                  className="glow-hover rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-lift transition hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                 >
                   View on GitHub
                 </a>
                 <Link
                   href="/tools"
-                  className="rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                  className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                 >
                   Browse tools
                 </Link>
@@ -296,7 +296,7 @@ export default async function Home() {
             </div>
             <Link
               href="/tools"
-              className="rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80"
+              className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               View all tools
             </Link>
@@ -361,7 +361,7 @@ export default async function Home() {
                     href={contributor.htmlUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-4 rounded-2xl border border-ink/10 bg-paper px-4 py-3 transition hover:border-ink/30 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                    className="glow-hover flex items-center gap-4 rounded-2xl border border-ink/10 bg-paper px-4 py-3 transition hover:border-ink/30 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                   >
                     <Image
                       src={contributor.avatarUrl}
@@ -383,11 +383,57 @@ export default async function Home() {
           </section>
         ) : null}
 
+        <section className="mx-auto mt-16 max-w-6xl">
+          <div className="section-card p-8 md:p-12">
+            <p className="eyebrow">Contribute</p>
+            <h2 className="section-title mt-4">Ship improvements with a clean workflow.</h2>
+            <p className="mt-4 max-w-3xl text-base text-ink/70">
+              Bring new tools, sharpen the guidance, or add system upgrades. This repo thrives when devs
+              share the patterns that actually move work forward.
+            </p>
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {[
+                {
+                  title: 'Spot an opportunity',
+                  text: 'Log a workflow gap or tool that saves serious time.'
+                },
+                {
+                  title: 'Ship a change',
+                  text: 'Add a tool entry, refine copy, or improve the UI polish.'
+                },
+                {
+                  title: 'Validate the impact',
+                  text: 'Include proof: metrics, screenshots, or before/after notes.'
+                }
+              ].map((item) => (
+                <div key={item.title} className="rounded-2xl border border-ink/10 bg-paper px-5 py-4 text-sm text-ink/70">
+                  <div className="text-sm font-semibold text-ink">{item.title}</div>
+                  <p className="mt-2 text-sm text-ink/70">{item.text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap gap-4">
+              <a
+                href={`${repo.htmlUrl}/issues`}
+                className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              >
+                Open an issue
+              </a>
+              <a
+                href={`${repo.htmlUrl}/pulls`}
+                className="glow-hover rounded-full bg-ink px-6 py-3 text-sm font-semibold text-paper shadow-lift transition hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              >
+                Submit a PR
+              </a>
+            </div>
+          </div>
+        </section>
+
         <footer className="mx-auto mt-20 flex max-w-6xl flex-wrap items-center justify-between gap-6 text-sm text-ink/60">
           <span>Built from live GitHub data for {repo.fullName}.</span>
           <a
             href={repo.htmlUrl}
-            className="font-semibold text-ink hover:text-ink/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+            className="fancy-link font-semibold text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
           >
             Explore the repo
           </a>
