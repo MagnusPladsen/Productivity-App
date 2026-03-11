@@ -97,7 +97,7 @@ export default async function ToolsPage() {
                               id={slugify(`${group.category}-${tool.name}`)}
                               className="scroll-mt-24"
                             >
-                              <ToolCard name={tool.name} description={tool.description} tags={tool.tags} url={tool.url} href={toolHref} stars={repoTool?.stars} />
+                              <ToolCard name={tool.name} description={tool.description} tags={tool.tags} url={tool.url} href={toolHref} stars={tool.stars ?? repoTool?.stars} />
                             </div>
                           );
                         })}

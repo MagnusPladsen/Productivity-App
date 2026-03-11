@@ -7,8 +7,8 @@ export type ParsedReadme = {
   intro: string;
   valueProposition: string;
   sections: ReadmeSection[];
-  tools: Array<{ name: string; description: string; tags: string[]; url?: string }>;
-  toolGroups: Array<{ category: string; tools: Array<{ name: string; description: string; tags: string[]; url?: string }> }>;
+  tools: Array<{ name: string; description: string; tags: string[]; url?: string; stars?: string }>;
+  toolGroups: Array<{ category: string; tools: Array<{ name: string; description: string; tags: string[]; url?: string; stars?: string }> }>;
 };
 
 const headingRegex = /^(#{1,6})\s+(.+)$/;
@@ -183,83 +183,42 @@ function cleanInline(text: string) {
 
 function parseToolGroupsFromReadme(markdown: string) {
   const lines = markdown.split('\n');
-  const tocIndex = lines.findIndex((line) => /^##\s+Table of Contents/i.test(line.trim()));
-  const categoryNames = new Set<string>();
-
-  if (tocIndex >= 0) {
-    for (let i = tocIndex + 1; i < lines.length; i += 1) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      if (/^##\s+/.test(line)) break;
-      if (/^\*+\s*\*+\s*\*+/.test(line)) break;
-      const headingMatch = line.match(/^###\s+(.+)$/);
-      if (headingMatch) {
-        categoryNames.add(cleanInline(headingMatch[1]));
-      }
-    }
-  }
-
   const groups: Array<{ category: string; tools: Array<{ name: string; description: string; tags: string[]; url?: string }> }> = [];
   let currentCategory: string | null = null;
 
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i].trim();
-    const headingMatch = line.match(/^###\s+(.+)$/);
-    if (!headingMatch) continue;
+  for (const line of lines) {
+    const trimmed = line.trim();
 
-    const headingText = cleanInline(headingMatch[1]);
-    if (categoryNames.size === 0 && !currentCategory) {
-      currentCategory = headingText;
-      groups.push({ category: currentCategory, tools: [] });
-      continue;
-    }
-
-    if (categoryNames.has(headingText)) {
-      currentCategory = headingText;
-      if (!groups.some((group) => group.category === currentCategory)) {
+    // Category heading: ### [Category Name](dir/README.md) or ### Category Name
+    const catMatch = trimmed.match(/^###\s+(?:\[([^\]]+)\]\([^)]+\)|(.+))$/);
+    if (catMatch) {
+      const catName = (catMatch[1] || catMatch[2]).trim();
+      // Skip non-category headings like "Contributing"
+      if (/contributing/i.test(catName)) continue;
+      currentCategory = catName;
+      if (!groups.some((g) => g.category === currentCategory)) {
         groups.push({ category: currentCategory, tools: [] });
       }
       continue;
     }
 
-    if (!currentCategory) {
-      currentCategory = 'Tools';
-      groups.push({ category: currentCategory, tools: [] });
-    }
-
-    const sectionLines: string[] = [];
-    for (let j = i + 1; j < lines.length; j += 1) {
-      const nextLine = lines[j].trim();
-      if (/^###\s+/.test(nextLine)) {
-        break;
+    // Tool list item: - [Tool Name](dir/tool.md) ⭐ 31.8k
+    if (!currentCategory) continue;
+    const toolMatch = trimmed.match(/^[-*+]\s+\[([^\]]+)\]\(([^)]+)\)(.*)$/);
+    if (toolMatch) {
+      const toolName = toolMatch[1].trim();
+      const rest = toolMatch[3].trim();
+      const starsMatch = rest.match(/⭐\s*([\d.,]+k?)/i);
+      const group = groups.find((g) => g.category === currentCategory);
+      if (group) {
+        group.tools.push({
+          name: toolName,
+          description: 'Part of the core stack.',
+          tags: dedupeTags([currentCategory!]),
+          url: undefined,
+          ...(starsMatch ? { stars: starsMatch[1] } : {})
+        });
       }
-      sectionLines.push(lines[j]);
-    }
-
-    const firstTextLine = sectionLines
-      .map((text) => text.trim())
-      .filter((text) => text.length > 0 && !/^🔗/.test(text))
-      .find(Boolean);
-
-    const linkMatch = sectionLines
-      .map((text) => text.match(/\[(.+?)\]\((https?:\/\/[^)]+)\)/))
-      .find((match) => match);
-
-    let description = firstTextLine ? cleanInline(firstTextLine) : 'Part of the core stack.';
-    description = description.replace(new RegExp(`^\\*\\*${headingText}\\*\\*\\s*`, 'i'), '').trim();
-    description = description.replace(/^-\s+/, '').trim();
-    const url = linkMatch ? linkMatch[2] : undefined;
-
-    const tool = {
-      name: headingText,
-      description: description || 'Part of the core stack.',
-      tags: dedupeTags([currentCategory]),
-      url
-    };
-
-    const group = groups.find((entry) => entry.category === currentCategory);
-    if (group) {
-      group.tools.push(tool);
     }
   }
 
