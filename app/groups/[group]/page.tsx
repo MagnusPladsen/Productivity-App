@@ -66,6 +66,7 @@ export default async function GroupPage({ params }: Props) {
                 description={tool.description}
                 tags={[tool.platforms, tool.openSource === 'Yes' ? 'Open Source' : ''].filter(Boolean)}
                 href={`/tools/${group.slug}/${tool.slug}`}
+                stars={tool.stars}
               />
             ))}
           </div>

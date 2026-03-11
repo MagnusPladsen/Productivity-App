@@ -6,9 +6,10 @@ type ToolCardProps = {
   tags?: string[];
   url?: string;
   href?: string;
+  stars?: string;
 };
 
-export default function ToolCard({ name, description, tags = [], url, href }: ToolCardProps) {
+export default function ToolCard({ name, description, tags = [], url, href, stars }: ToolCardProps) {
   const externalIcon = url ? (
     <a
       href={url}
@@ -26,7 +27,17 @@ export default function ToolCard({ name, description, tags = [], url, href }: To
   const content = (
     <>
       <div className="flex items-start justify-between gap-2">
-        <div className="text-lg font-semibold text-ink">{name}</div>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-semibold text-ink">{name}</span>
+          {stars ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-3 w-3">
+                <path fillRule="evenodd" d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" clipRule="evenodd" />
+              </svg>
+              {stars}
+            </span>
+          ) : null}
+        </div>
         {externalIcon}
       </div>
       <p className="mt-3 text-sm text-ink/70 leading-relaxed">{description}</p>

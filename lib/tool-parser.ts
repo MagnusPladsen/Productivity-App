@@ -10,11 +10,14 @@ export type ToolDetail = {
   group: string;
   description: string;
   platforms: string[];
-  links: Array<{ label: string; url: string }>;
+  stars?: string;
+  links: Array<{ label: string; url: string; stars?: string }>;
   installSections: Array<{
     label: string;
     blocks: Array<{ label?: string; code: string; lang: string }>;
   }>;
+  usageSection?: string;
+  pricingSection?: string;
   alternatives: Array<{ name: string; slug: string; group?: string }>;
 };
 
@@ -24,6 +27,7 @@ export type GroupToolEntry = {
   platforms: string;
   openSource: string;
   description: string;
+  stars?: string;
 };
 
 export type GroupDetail = {
@@ -71,6 +75,12 @@ function stripMd(filename: string): string {
   return filename.replace(/\.md$/i, "");
 }
 
+/** Extract a star count like "⭐ 31.8k" from a string, returning the count or undefined. */
+function extractStars(text: string): string | undefined {
+  const m = text.match(/⭐\s*([\d.,]+k?)/i);
+  return m ? m[1] : undefined;
+}
+
 // ---------------------------------------------------------------------------
 // parseToolMarkdown
 // ---------------------------------------------------------------------------
@@ -107,12 +117,17 @@ export function parseToolMarkdown(
 
   // --- links ---
   const links: ToolDetail["links"] = [];
+  let stars: string | undefined;
   const linksRange = sectionRange(lines, "Links");
   if (linksRange) {
     for (let i = linksRange[0]; i < linksRange[1]; i++) {
       const lm = lines[i].match(/\[([^\]]+)\]\(([^)]+)\)/);
       if (lm) {
-        links.push({ label: lm[1], url: lm[2] });
+        const linkStars = extractStars(lines[i]);
+        links.push({ label: lm[1], url: lm[2], ...(linkStars ? { stars: linkStars } : {}) });
+        if (linkStars && /github/i.test(lm[2])) {
+          stars = linkStars;
+        }
       }
     }
   }
@@ -212,14 +227,31 @@ export function parseToolMarkdown(
     }
   }
 
+  // --- usage section ---
+  let usageSection: string | undefined;
+  const usageRange = sectionRange(lines, "Usage");
+  if (usageRange) {
+    usageSection = lines.slice(usageRange[0], usageRange[1]).join("\n").trim();
+  }
+
+  // --- pricing section ---
+  let pricingSection: string | undefined;
+  const pricingRange = sectionRange(lines, "Pricing");
+  if (pricingRange) {
+    pricingSection = lines.slice(pricingRange[0], pricingRange[1]).join("\n").trim();
+  }
+
   return {
     name,
     slug,
     group,
     description,
     platforms,
+    stars,
     links,
     installSections,
+    usageSection,
+    pricingSection,
     alternatives,
   };
 }
@@ -287,10 +319,11 @@ export function parseGroupReadme(
 
     const [toolCell, platformsCell, openSourceCell, descCell] = cells;
 
-    // Extract name and slug from [Name](file.md)
+    // Extract name and slug from [Name](file.md) ⭐ 31.8k
     const linkMatch = toolCell.match(/\[([^\]]+)\]\(([^)]+)\)/);
     const toolName = linkMatch ? linkMatch[1] : toolCell;
     const toolSlug = linkMatch ? stripMd(linkMatch[2]) : slugify(toolCell);
+    const toolStars = extractStars(toolCell);
 
     tools.push({
       name: toolName,
@@ -298,6 +331,7 @@ export function parseGroupReadme(
       platforms: platformsCell,
       openSource: openSourceCell,
       description: descCell,
+      ...(toolStars ? { stars: toolStars } : {}),
     });
   }
 
