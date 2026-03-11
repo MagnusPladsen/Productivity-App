@@ -200,14 +200,5 @@ export async function getRepoData(): Promise<RepoData> {
   };
 }
 
-export async function getGroupBySlug(slug: string): Promise<GroupDetail | null> {
-  const { groups } = await getRepoData();
-  return groups.find((g) => g.slug === slug) ?? null;
-}
-
-export async function getToolBySlug(groupSlug: string, toolSlug: string): Promise<ToolDetail | null> {
-  const { toolDetails } = await getRepoData();
-  return toolDetails[`${groupSlug}/${toolSlug}`] ?? null;
-}
 
 export { REVALIDATE_SECONDS };
