@@ -1,21 +1,16 @@
 import Nav from '@/components/Nav';
 import ToolCard from '@/components/ToolCard';
 import { getRepoData } from '@/lib/github';
+import { slugify } from '@/lib/format';
 import RefreshButton from '@/components/RefreshButton';
 import ToolNavigator, { type NavItem } from '@/components/ToolNavigator';
 import CategoryIndex from '@/components/CategoryIndex';
+import Link from 'next/link';
 
 export const revalidate = 21600;
 
-function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-}
-
 export default async function ToolsPage() {
-  const { repo, parsed } = await getRepoData();
+  const { repo, parsed, groups: repoGroups, fetchedAt } = await getRepoData();
   const groups = parsed.toolGroups;
   const hasTools = groups.length > 0;
   const refreshToken = process.env.NEXT_PUBLIC_REVALIDATE_TOKEN;
@@ -58,7 +53,7 @@ export default async function ToolsPage() {
             </p>
             {refreshToken ? (
               <div className="mt-6">
-                <RefreshButton token={refreshToken} />
+                <RefreshButton token={refreshToken} fetchedAt={fetchedAt} />
               </div>
             ) : null}
           </section>
@@ -85,20 +80,27 @@ export default async function ToolsPage() {
                       <div className="flex flex-wrap items-center justify-between gap-4">
                         <div>
                           <p className="eyebrow">Category</p>
-                          <h2 className="section-title mt-2">{group.category}</h2>
+                          <Link href={`/groups/${slugify(group.category)}`} className="transition hover:opacity-80">
+                            <h2 className="section-title mt-2">{group.category}</h2>
+                          </Link>
                         </div>
                         <div className="stamp bg-paper/80">{group.tools.length} tools</div>
                       </div>
                       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {group.tools.map((tool) => (
-                          <div
-                            key={`${group.category}-${tool.name}`}
-                            id={slugify(`${group.category}-${tool.name}`)}
-                            className="scroll-mt-24"
-                          >
-                            <ToolCard name={tool.name} description={tool.description} tags={tool.tags} url={tool.url} />
-                          </div>
-                        ))}
+                        {group.tools.map((tool) => {
+                          const repoGroup = repoGroups.find((g) => g.name === group.category);
+                          const repoTool = repoGroup?.tools.find((t) => t.name === tool.name);
+                          const toolHref = repoGroup && repoTool ? `/tools/${repoGroup.slug}/${repoTool.slug}` : undefined;
+                          return (
+                            <div
+                              key={`${group.category}-${tool.name}`}
+                              id={slugify(`${group.category}-${tool.name}`)}
+                              className="scroll-mt-24"
+                            >
+                              <ToolCard name={tool.name} description={tool.description} tags={tool.tags} url={tool.url} href={toolHref} />
+                            </div>
+                          );
+                        })}
                       </div>
                     </section>
                   ))}

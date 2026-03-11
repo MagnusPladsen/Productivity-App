@@ -26,6 +26,8 @@ export async function POST(request: Request) {
   revalidateTag('repo-data');
   revalidatePath('/');
   revalidatePath('/tools');
+  revalidatePath('/groups/[group]', 'page');
+  revalidatePath('/tools/[group]/[tool]', 'page');
 
   return NextResponse.json({ revalidated: true, timestamp: Date.now() });
 }

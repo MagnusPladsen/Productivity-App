@@ -1,6 +1,6 @@
 import RefreshButton from '@/components/RefreshButton';
 import ToolCard from '@/components/ToolCard';
-import { formatDate, formatNumber } from '@/lib/format';
+import { formatDate, formatNumber, slugify } from '@/lib/format';
 import { getRepoData } from '@/lib/github';
 import Image from 'next/image';
 import Nav from '@/components/Nav';
@@ -139,6 +139,7 @@ type Tool = {
   description: string;
   tags: string[];
   url?: string;
+  href?: string;
 };
 
 const fallbackTools: Tool[] = [
@@ -165,11 +166,16 @@ const fallbackTools: Tool[] = [
 ];
 
 export default async function Home() {
-  const { repo, parsed, contributors } = await getRepoData();
-  const tools: Tool[] = (parsed.tools.length > 0 ? parsed.tools : fallbackTools).map((tool) => ({
-    ...tool,
-    url: tool.url ?? undefined
-  }));
+  const { repo, parsed, contributors, groups, fetchedAt } = await getRepoData();
+  const tools: Tool[] = (parsed.tools.length > 0 ? parsed.tools : fallbackTools).map((tool) => {
+    const group = groups.find((g) => g.tools.some((t) => t.name === tool.name));
+    const toolSlug = group?.tools.find((t) => t.name === tool.name)?.slug;
+    return {
+      ...tool,
+      url: tool.url ?? undefined,
+      href: group && toolSlug ? `/tools/${group.slug}/${toolSlug}` : undefined,
+    };
+  });
   const featuredTools = tools.slice(0, 6);
   const categories = parsed.toolGroups.slice(0, 8).map((group) => group.category);
   const whyContent = getSectionContent(parsed.sections, ['why', 'philosophy', 'principles']);
@@ -229,7 +235,7 @@ export default async function Home() {
                 >
                   Browse tools
                 </Link>
-                {refreshToken ? <RefreshButton token={refreshToken} /> : null}
+                {refreshToken ? <RefreshButton token={refreshToken} fetchedAt={fetchedAt} /> : null}
               </div>
               <HeroDataStrip
                 items={stripItems}
@@ -264,12 +270,13 @@ export default async function Home() {
                   <p className="eyebrow">Categories</p>
                   <div className="mt-4 flex flex-wrap gap-2">
                     {categories.map((category) => (
-                      <span
+                      <Link
                         key={category}
-                        className="chip"
+                        href={`/groups/${groups.find((g) => g.name === category)?.slug ?? slugify(category)}`}
+                        className="chip transition hover:bg-ink/10"
                       >
                         {category}
-                      </span>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -309,6 +316,7 @@ export default async function Home() {
                 description={tool.description}
                 tags={tool.tags}
                 url={tool.url}
+                href={tool.href}
               />
             ))}
           </div>
