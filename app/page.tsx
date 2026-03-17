@@ -126,7 +126,7 @@ function renderBlocks(markdown: string) {
     return (
       <pre
         key={`code-${index}`}
-        className="overflow-x-auto rounded-2xl border border-ink/15 bg-ink px-6 py-4 text-xs text-paper/90 shadow-lift"
+        className="overflow-x-auto rounded-2xl border border-ink/15 bg-ink px-6 py-4 font-mono text-xs text-paper/90 shadow-lift"
       >
         <code>{block.text}</code>
       </pre>
@@ -203,7 +203,7 @@ export default async function Home() {
           </div>
           <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="space-y-6 fade-rise" data-delay="2">
-              <div className="inline-flex items-center gap-3 rounded-full border border-ink/15 bg-paper/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-ink/60">
+              <div className="inline-flex items-center gap-3 rounded-full border border-ink/15 bg-paper/80 px-4 py-2 font-mono text-[11px] font-medium uppercase tracking-[0.15em] text-ink/60">
                 {repo.owner.avatarUrl ? (
                   <Image
                     src={repo.owner.avatarUrl}
@@ -215,11 +215,13 @@ export default async function Home() {
                 ) : null}
                 {repo.owner.login}
               </div>
-              <h1 className="font-display text-4xl md:text-6xl leading-tight text-ink">
+              <h1 className="font-display text-4xl font-extrabold tracking-tight text-ink md:text-6xl">
                 {repo.name}
-                <span className="block text-ink/60">{parsed.valueProposition}</span>
               </h1>
-              <p className="text-base md:text-lg text-ink/70 leading-relaxed">
+              <p className="max-w-xl text-lg font-medium leading-relaxed text-ink/50 md:text-xl">
+                {parsed.valueProposition}
+              </p>
+              <p className="max-w-lg text-base leading-relaxed text-ink/70">
                 {repo.description}
               </p>
               <div className="flex flex-wrap items-center gap-4">
@@ -231,7 +233,7 @@ export default async function Home() {
                 </a>
                 <Link
                   href="/tools"
-                  className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                  className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.15em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
                 >
                   Browse tools
                 </Link>
@@ -303,7 +305,7 @@ export default async function Home() {
             </div>
             <Link
               href="/tools"
-              className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+              className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.15em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
             >
               View all tools
             </Link>
@@ -423,7 +425,7 @@ export default async function Home() {
             <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href={`${repo.htmlUrl}/issues`}
-                className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
+                className="glow-hover rounded-full border border-ink/20 bg-paper px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.15em] text-ink/70 transition hover:border-ink/40 hover:bg-paper/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper"
               >
                 Open an issue
               </a>

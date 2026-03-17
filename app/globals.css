@@ -241,15 +241,15 @@ button,
 }
 
 .section-title {
-  @apply text-3xl md:text-4xl font-display tracking-tight text-ink;
+  @apply text-2xl md:text-3xl font-display font-bold tracking-tight text-ink;
 }
 
 .eyebrow {
-  @apply uppercase text-xs tracking-[0.28em] text-ink/60 font-semibold;
+  @apply font-mono uppercase text-xs tracking-[0.2em] text-ink/60 font-medium;
 }
 
 .chip {
-  @apply rounded-full border border-ink/15 bg-paper/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-ink/70;
+  @apply font-mono rounded-full border border-ink/15 bg-paper/80 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.15em] text-ink/70;
   transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -267,7 +267,7 @@ button,
 }
 
 .stamp {
-  @apply rounded-full border border-ink/15 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.3em] text-ink/70;
+  @apply font-mono rounded-full border border-ink/15 px-4 py-2 text-[11px] font-medium uppercase tracking-[0.2em] text-ink/70;
   transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 

@@ -1,19 +1,25 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import PointerGlow from '@/components/PointerGlow';
 import CursorHint from '@/components/CursorHint';
 
-const display = JetBrains_Mono({
+const display = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-display',
-  weight: ['600', '700']
+  weight: ['500', '600', '700', '800']
 });
 
-const body = JetBrains_Mono({
+const body = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-body',
   weight: ['400', '500', '600']
+});
+
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500']
 });
 
 export const metadata: Metadata = {
@@ -27,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable}`}>
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="font-body antialiased">
         <PointerGlow />
         <CursorHint />

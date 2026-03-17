@@ -8,7 +8,7 @@ type NavProps = {
 export default function Nav({ repoUrl }: NavProps) {
   return (
     <nav className="flex flex-wrap items-center justify-between gap-4 rounded-[26px] border border-ink/10 bg-paper/90 px-5 py-4 shadow-lift backdrop-blur-md">
-      <div className="text-xs font-semibold uppercase tracking-[0.35em] text-ink/70">
+      <div className="font-mono text-xs font-medium uppercase tracking-[0.25em] text-ink/70">
         Productivity Stack
       </div>
       <div className="flex flex-wrap items-center gap-4 text-sm font-semibold text-ink/70">

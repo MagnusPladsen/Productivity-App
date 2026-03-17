@@ -129,7 +129,7 @@ export default function ToolNavigator({ items }: ToolNavigatorProps) {
       <button
         type="button"
         onClick={() => setIsOpen((open) => !open)}
-        className={`mt-4 flex items-center gap-2 rounded-full border border-ink/20 bg-ink px-5 py-3 text-xs font-semibold uppercase tracking-[0.25em] text-paper shadow-2xl shadow-black/20 transition hover:border-ink/40 hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
+        className={`mt-4 flex items-center gap-2 rounded-full border border-ink/20 bg-ink px-5 py-3 font-mono text-xs font-medium uppercase tracking-[0.15em] text-paper shadow-2xl shadow-black/20 transition hover:border-ink/40 hover:bg-ink/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:ring-offset-2 focus-visible:ring-offset-paper ${
           isVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-expanded={isOpen}

@@ -13,8 +13,9 @@ export default {
         sun: '#c49bff'
       },
       fontFamily: {
-        display: ['var(--font-display)', 'ui-serif', 'Georgia', 'serif'],
-        body: ['var(--font-body)', 'system-ui', 'sans-serif']
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
+        body: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace']
       },
       boxShadow: {
         card: '0 24px 60px rgba(9, 6, 20, 0.55)',
